@@ -4,6 +4,7 @@ import com.bms.bank_management_system.enums.TransactionStatus;
 import com.bms.bank_management_system.enums.TransactionType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transaction")
+@Data
 public class Transaction {
 
     @Id

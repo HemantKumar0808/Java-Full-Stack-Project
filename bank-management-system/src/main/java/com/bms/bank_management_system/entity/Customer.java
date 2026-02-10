@@ -4,6 +4,9 @@ import com.bms.bank_management_system.enums.CustomerStatus;
 import com.bms.bank_management_system.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,6 +17,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "customers")
+@Data
 public class Customer {
 
     @Id
@@ -46,7 +50,7 @@ public class Customer {
     private LocalDate dateOfBirth;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "varchar(20) default 'ACTIVE'")
+    @Column(name = "status") //columnDefinition = "varchar(20) default 'ACTIVE'"
     private CustomerStatus status;
 
     @CreationTimestamp
@@ -71,4 +75,26 @@ public class Customer {
     private List<Account> accounts = new ArrayList<>();
 
     // getters, setters, constructors...
+
+
+    public Customer() {
+    }
+
+    public Customer(String customerId, String email, String phoneNo, String firstName, String lastName, String fatherName, Gender gender, LocalDate dateOfBirth, CustomerStatus status, LocalDateTime createdAt, LocalDateTime updatedAt, CustomerAddress customerAddress, CustomerAdditionalInfo additionalInfo, List<Account> accounts) {
+        this.customerId = customerId;
+        this.email = email;
+        this.phoneNo = phoneNo;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.fatherName = fatherName;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.customerAddress = customerAddress;
+        this.additionalInfo = additionalInfo;
+        this.accounts = accounts;
+    }
+
 }

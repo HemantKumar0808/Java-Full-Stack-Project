@@ -2,9 +2,11 @@ package com.bms.bank_management_system.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "customer_address")
+@Data
 public class CustomerAddress {
 
     @Id

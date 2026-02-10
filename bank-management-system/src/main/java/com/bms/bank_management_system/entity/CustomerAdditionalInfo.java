@@ -1,15 +1,21 @@
 package com.bms.bank_management_system.entity;
 
+import com.bms.bank_management_system.enums.AccountType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "customer_additional_info")
+@Data
 public class CustomerAdditionalInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private AccountType preferredAccountType;
 
     @Column(name = "pan_number", nullable = false, unique = true)
     private String panNumber;
