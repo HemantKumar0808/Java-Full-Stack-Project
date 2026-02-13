@@ -1,3 +1,7 @@
+© 2026 Hemant Kumar  
+This project is the original work of Hemant Kumar.  
+Unauthorized copying or redistribution without proper attribution is strictly prohibited.
+
 # Java Full Stack Learning & Projects 🚀
 
 A monorepo containing all my full-stack Java + Spring Boot projects.  
