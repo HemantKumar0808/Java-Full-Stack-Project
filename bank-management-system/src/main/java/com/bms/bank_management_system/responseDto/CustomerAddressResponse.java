@@ -19,5 +19,4 @@ public class CustomerAddressResponse {
     private String pinCode;
     private String country;
 
-
 }

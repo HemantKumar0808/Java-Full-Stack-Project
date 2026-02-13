@@ -39,5 +39,4 @@ public class CustomerAddress {
     @JsonBackReference
     private Customer customer;
 
-    // getters, setters...
 }

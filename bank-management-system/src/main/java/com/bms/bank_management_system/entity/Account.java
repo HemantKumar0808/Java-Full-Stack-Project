@@ -22,9 +22,15 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Business Logic
     @Column(name = "account_no", unique = true, nullable = false, updatable = false, length = 20)
     private String accountNo;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "account_status", nullable = false, columnDefinition = "varchar(30) default 'PENDING_KYC'")
+    private AccountStatus accountStatus = AccountStatus.PENDING_KYC;
+
+    // Provide by Customer/User
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type", nullable = false)
     private AccountType accountType;
@@ -32,13 +38,12 @@ public class Account {
     @Column(name = "balance", nullable = false, columnDefinition = "decimal(15,2) default 0.00")
     private BigDecimal balance = BigDecimal.ZERO;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "account_status", columnDefinition = "varchar(20) default 'ACTIVE'")
-    private AccountStatus accountStatus = AccountStatus.ACTIVE;
 
+    // JPA Generate
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
 
     // Relationships
     @ManyToOne(fetch = FetchType.LAZY)
@@ -54,5 +59,4 @@ public class Account {
     @JsonManagedReference("to-account-transactions")
     private List<Transaction> incomingTransactions = new ArrayList<>();
 
-    // getters, setters...
 }

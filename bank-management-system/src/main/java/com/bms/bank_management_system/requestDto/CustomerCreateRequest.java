@@ -1,7 +1,5 @@
 package com.bms.bank_management_system.requestDto;
 
-
-import com.bms.bank_management_system.enums.AccountType;
 import com.bms.bank_management_system.enums.Gender;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -64,16 +62,6 @@ public class CustomerCreateRequest {
     @Pattern(regexp = "^\\d{6}$", message = "PIN code must be 6 digits")
     private String pinCode;
 
-    private String country = "India";
-
-//    AdditionalInfo Entity Data
-
-//    private AccountType preferredAccountType;
-//    private String panNumber;
-//    private String aadharNumber;
-//    private String education;
-//    private String occupation;
-//    private Boolean hasExistingAccount;
-
+    private String country;
 
 }

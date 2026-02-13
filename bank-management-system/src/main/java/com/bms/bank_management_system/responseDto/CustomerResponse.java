@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class CustomerResponse {
-    private Long id;
     private String customerId;
+    private CustomerStatus status;
     private String firstName;
     private String lastName;
     private String fatherName;
@@ -25,9 +25,10 @@ public class CustomerResponse {
     private String phoneNo;
     private LocalDate dateOfBirth;
     private Gender gender;
-    private CustomerStatus status;
+//    private String kycStatus;   // "PENDING" / "COMPLETED"
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
 
     // Nested address
     private CustomerAddressResponse address;

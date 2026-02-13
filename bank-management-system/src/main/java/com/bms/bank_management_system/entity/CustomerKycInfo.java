@@ -6,21 +6,19 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "customer_additional_info")
+@Table(name = "customer_kyc_info")
 @Data
-public class CustomerAdditionalInfo {
+public class CustomerKycInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private AccountType preferredAccountType;
-
-    @Column(name = "pan_number", nullable = false, unique = true)
+    // Provide by Customer/User
+    @Column(name = "pan_number", nullable = false, unique = true,updatable = false)
     private String panNumber;
 
-    @Column(name = "aadhar_number", nullable = false, unique = true, length = 12)
+    @Column(name = "aadhar_number", nullable = false, unique = true,updatable = false , length = 12)
     private String aadharNumber;
 
     @Column(name = "education", nullable = false)
@@ -29,13 +27,9 @@ public class CustomerAdditionalInfo {
     @Column(name = "occupation", nullable = false)
     private String occupation;
 
-    @Column(name = "existing_account", columnDefinition = "boolean default false")
-    private Boolean hasExistingAccount = false;
-
+    // Relations
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     @JsonBackReference
     private Customer customer;
-
-    // getters, setters...
 }
