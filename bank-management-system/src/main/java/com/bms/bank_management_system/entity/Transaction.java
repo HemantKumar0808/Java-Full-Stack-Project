@@ -24,6 +24,8 @@ public class Transaction {
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;
 
+    @Column(name = "remarks", length = 500)
+    private String remarks;
 
     // Business Logic
     @Column(name = "transaction_id", unique = true, nullable = false, updatable = false)
@@ -37,13 +39,10 @@ public class Transaction {
     @Column(name = "transaction_status", nullable = false) // columnDefinition = "varchar(20) default 'SUCCESS'"
     private TransactionStatus TransactionStatus;
 
+
     @CreationTimestamp
     @Column(name = "transaction_date_time", updatable = false)
     private LocalDateTime transactionDateTime;
-
-    @Column(name = "remarks", length = 500)
-    private String remarks;
-
 
     // From account (for WITHDRAW & TRANSFER)
     @ManyToOne(fetch = FetchType.LAZY)
