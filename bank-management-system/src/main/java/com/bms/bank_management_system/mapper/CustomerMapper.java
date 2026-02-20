@@ -2,7 +2,7 @@ package com.bms.bank_management_system.mapper;
 
 import com.bms.bank_management_system.entity.Customer;
 import com.bms.bank_management_system.entity.CustomerAddress;
-import com.bms.bank_management_system.requestDto.CustomerCreateRequest;
+import com.bms.bank_management_system.requestDto.CustomerSignupRequest;
 import com.bms.bank_management_system.responseDto.CustomerAddressResponse;
 import com.bms.bank_management_system.responseDto.CustomerResponse;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomerMapper {
 
-    public Customer toEntity(CustomerCreateRequest request){
+    public Customer toEntity(CustomerSignupRequest request){
         // Customer Mapping
         Customer customer = new Customer();
         customer.setFirstName(request.getFirstName());

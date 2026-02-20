@@ -1,6 +1,6 @@
 package com.bms.bank_management_system.controller;
 
-import com.bms.bank_management_system.requestDto.CustomerCreateRequest;
+import com.bms.bank_management_system.requestDto.CustomerSignupRequest;
 import com.bms.bank_management_system.requestDto.CustomerKycRequest;
 import com.bms.bank_management_system.responseDto.CustomerResponse;
 import com.bms.bank_management_system.responseDto.KycCompletionResponse;
@@ -19,9 +19,9 @@ public class CustomerController {
     private final CustomerService customerService;
 
     // Crete customer end point
-    @PostMapping
-    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody CustomerCreateRequest request) {
-        CustomerResponse response = customerService.createCustomer(request);
+    @PostMapping("/signup")
+    public ResponseEntity<CustomerResponse> signup(@Valid @RequestBody CustomerSignupRequest request) {
+        CustomerResponse response = customerService.signup(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

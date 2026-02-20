@@ -11,7 +11,7 @@ import com.bms.bank_management_system.mapper.CustomerKycMapper;
 import com.bms.bank_management_system.mapper.CustomerMapper;
 import com.bms.bank_management_system.repository.AccountRepository;
 import com.bms.bank_management_system.repository.CustomerRepository;
-import com.bms.bank_management_system.requestDto.CustomerCreateRequest;
+import com.bms.bank_management_system.requestDto.CustomerSignupRequest;
 import com.bms.bank_management_system.requestDto.CustomerKycRequest;
 import com.bms.bank_management_system.responseDto.CustomerResponse;
 import com.bms.bank_management_system.responseDto.KycCompletionResponse;
@@ -27,7 +27,7 @@ public class CustomerServiceImpl implements com.bms.bank_management_system.servi
     private final AccountRepository accountRepository;
 
     @Override
-    public CustomerResponse createCustomer(CustomerCreateRequest request) {
+    public CustomerResponse signup(CustomerSignupRequest request) {
 
         // 1. Validate unique fields
         // Email

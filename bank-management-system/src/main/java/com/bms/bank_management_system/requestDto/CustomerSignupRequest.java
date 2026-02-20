@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CustomerCreateRequest {
+public class CustomerSignupRequest {
 
     //    Customer Entity Data
     @NotBlank(message = "First name is required")
@@ -42,6 +42,10 @@ public class CustomerCreateRequest {
 
     @NotNull(message = "Gender is required")
     private Gender gender;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters")
+    private String password;
 
     //    Address Entity Data
     @NotBlank(message = "House number is required")
