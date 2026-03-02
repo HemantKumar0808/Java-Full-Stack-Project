@@ -18,11 +18,11 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    // Crete customer end point
+    // Signup customer
     @PostMapping("/signup")
     public ResponseEntity<CustomerResponse> signup(@Valid @RequestBody CustomerSignupRequest request) {
         CustomerResponse response = customerService.signup(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // KYC end point
@@ -34,6 +34,7 @@ public class CustomerController {
         System.out.println("Received request: " + request);
 
         KycCompletionResponse response = customerService.completeKyc(customerId, request);
+
         return ResponseEntity.ok(response);
     }
 }

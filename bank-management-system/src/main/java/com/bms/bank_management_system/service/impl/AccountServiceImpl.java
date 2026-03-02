@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -27,104 +28,96 @@ import java.util.Random;
 @Transactional
 public class AccountServiceImpl implements AccountService {
 
+    private static final BigDecimal NON_KYC_LIMIT = new BigDecimal("1000");
+
     private final AccountRepository accountRepository;
     private final CustomerRepository customerRepository;
-    private final TransactionRepository transactionRepository;
-
     private final AccountMapper accountMapper;
 
+    // ============================
+    // Public Method
+    // ============================
+
+    @Override
+    public AccountResponse createAccount(String customerId,
+                                         AccountCreateRequest request) {
+
+        // 1️⃣ Get authenticated customer
+        Customer customer = customerRepository.findByCustomerId(customerId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Customer not found with ID: " + customerId
+                        ));
+
+        // 2️⃣ Duplicate account type check
+        boolean alreadyExists = customer.getAccounts().stream()
+                .anyMatch(acc ->
+                        acc.getAccountType() == request.getAccountType());
+
+        if (alreadyExists) {
+            throw new IllegalStateException(
+                    "You already have a "
+                            + request.getAccountType()
+                            + " account"
+            );
+        }
+
+        // 3️⃣ KYC validation for initial deposit
+        boolean kycCompleted = customer.getKycInfo() != null;
+
+        BigDecimal deposit = Optional.ofNullable(
+                request.getInitialDeposit()
+        ).orElse(BigDecimal.ZERO);
+
+        if (!kycCompleted
+                && deposit.compareTo(NON_KYC_LIMIT) > 0) {
+            throw new IllegalArgumentException(
+                    "Without KYC, initial deposit cannot exceed ₹1000"
+            );
+        }
+
+        // 4️⃣ Create account entity
+        Account account = new Account();
+        account.setAccountNo(generateAccountNumber());
+        account.setAccountType(request.getAccountType());
+        account.setBalance(BigDecimal.ZERO);
+        account.setAccountStatus(AccountStatus.ACTIVE);
+        account.setCustomer(customer);
+        account.setCreatedAt(LocalDateTime.now());
+
+        // 5️⃣ Handle initial deposit
+        if (deposit.compareTo(BigDecimal.ZERO) > 0) {
+
+            account.setBalance(deposit);
+
+            Transaction transaction = new Transaction();
+            transaction.setTransactionId(generateTransactionId());
+            transaction.setAmount(deposit);
+            transaction.setTransactionType(TransactionType.DEPOSIT);
+            transaction.setTransactionStatus(TransactionStatus.SUCCESS);
+            transaction.setTransactionDateTime(LocalDateTime.now());
+            transaction.setRemarks("Initial deposit");
+            transaction.setToAccount(account);
+
+            account.getIncomingTransactions().add(transaction);
+        }
+
+        // 6️⃣ Save account (Cascade should save transaction)
+        Account savedAccount = accountRepository.save(account);
+
+        // 7️⃣ Prepare response
+        AccountResponse response = accountMapper.toResponse(savedAccount);
+        response.setMessage(kycCompleted ? "Account successfully created with full access (KYC already completed)!" : "Account created with limited access. Please complete KYC to remove limits.");
+        return response;
+    }
 
     private String generateAccountNumber() {
-        // Simple example – real mein bank branch code + sequence use karna chahiye
-        return "ACC" + (1000000000L + new Random().nextLong(9000000000L));
+        return "ACC" +
+                (1000000000L
+                        + new Random().nextLong(9000000000L));
     }
 
     private String generateTransactionId() {
         return "TXN" + System.currentTimeMillis();
     }
-
-    @Override
-    public AccountResponse createAccount(AccountCreateRequest request) {
-
-        // Customer ID send by user (CUST-1723456789123)
-        String providedCustomerId = request.getCustomerId();
-
-        // 1. Customer ID check (business ID se)
-        Customer customer = customerRepository.findByCustomerId(providedCustomerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with customerId: " + providedCustomerId));
-
-        // 2. Account type duplicate check
-        boolean alreadyHasType = customer.getAccounts().stream()
-                .anyMatch(acc -> acc.getAccountType() == request.getAccountType());
-
-        if (alreadyHasType) {
-            throw new IllegalStateException("You already have a " + request.getAccountType() + " account");
-        }
-
-        // 3. Create account
-        Account account = accountMapper.toEntity(request);
-
-        // 4. Business logic add
-        account.setAccountNo(generateAccountNumber());
-
-        // 5. Set customer in account
-        account.setCustomer(customer);
-
-        // 7. KYC status check
-        boolean kycDone = customer.getKycInfo() != null;
-
-        // 7. Set Account status behalf of KYC info
-        if (kycDone) {
-            account.setAccountStatus(AccountStatus.ACTIVE);
-        } else {
-            account.setAccountStatus(AccountStatus.PENDING_KYC);
-        }
-
-        // 8. Initial deposit logic
-        BigDecimal deposit = request.getInitialDeposit();
-
-        if (deposit != null && deposit.compareTo(BigDecimal.ZERO) > 0) {
-
-            if (!kycDone) {
-                if (deposit.compareTo(new BigDecimal("1000")) > 0) {
-                    throw new IllegalArgumentException("Without KYC, initial deposit cannot exceed ₹1000.");
-                }
-            }
-
-            // 8.1. Set initial amount in account
-            account.setBalance(account.getBalance().add(deposit));
-
-            // 8.2. Need to make initial deposit TX
-            Transaction tx = new Transaction();
-            tx.setTransactionId(generateTransactionId());
-            tx.setAmount(deposit);
-            tx.setTransactionType(TransactionType.DEPOSIT);
-            tx.setTransactionStatus(TransactionStatus.SUCCESS);
-            tx.setTransactionDateTime(LocalDateTime.now());
-            tx.setRemarks("Initial deposit");
-
-            // # Many to one - set
-            tx.setToAccount(account);
-
-            // # One to many - set
-            account.getIncomingTransactions().add(tx);
-
-            // 8.3. Save transaction in db
-            transactionRepository.save(tx);
-        }
-
-
-        // 9. Save account
-        Account savedAccount = accountRepository.save(account);
-
-        // 10. Prepare response
-        AccountResponse response = accountMapper.toResponse(savedAccount);
-        response.setMessage(kycDone
-                ? "Account successfully created with full access (KYC already completed)!"
-                : "Account created with limited access. Please complete KYC to remove limits.");
-
-        return response;
-    }
-
-
 }

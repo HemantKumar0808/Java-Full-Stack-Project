@@ -5,5 +5,6 @@ import com.bms.bank_management_system.responseDto.AccountResponse;
 
 public interface AccountService {
 
-    AccountResponse createAccount(AccountCreateRequest request);
+    AccountResponse createAccount(String customerId,
+                                         AccountCreateRequest request);
 }

@@ -16,6 +16,7 @@ import com.bms.bank_management_system.requestDto.CustomerKycRequest;
 import com.bms.bank_management_system.responseDto.CustomerResponse;
 import com.bms.bank_management_system.responseDto.KycCompletionResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +26,7 @@ public class CustomerServiceImpl implements com.bms.bank_management_system.servi
     private final CustomerMapper customerMapper;
     private final CustomerKycMapper customerKycMapper;
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public CustomerResponse signup(CustomerSignupRequest request) {
@@ -45,14 +47,17 @@ public class CustomerServiceImpl implements com.bms.bank_management_system.servi
         // 3. Business logic add
         customer.setCustomerId(generateCustomerId());
         customer.setStatus(CustomerStatus.ACTIVE);
+        customer.setRole("CUSTOMER");
 
-        // 4. Save -> JPA -> DB
+        // 4. Password encode
+        customer.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        // 5. Save
         Customer saved = customerRepository.save(customer);
 
-        // 5. Customer entity -> Customer Response
+        // 6. Response
         CustomerResponse response = customerMapper.toResponse(saved);
 
-        // 6. return
         return response;
 
     }

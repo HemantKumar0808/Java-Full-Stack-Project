@@ -1,5 +1,6 @@
 package com.bms.bank_management_system;
 
+import com.bms.bank_management_system.security.util.JwtUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,6 +10,7 @@ public class BankManagementSystemApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BankManagementSystemApplication.class, args);
 		System.out.println("Hello world!!!");
+
 	}
 
 }

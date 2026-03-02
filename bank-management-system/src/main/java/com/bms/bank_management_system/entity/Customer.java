@@ -12,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -52,12 +53,15 @@ public class Customer {
     @Column(name = "customer_id", nullable = false, unique = true, updatable = false)
     private String customerId;
 
-    @Column(nullable = false)
-    private String password; // hashed
+    @Column(name = "password", nullable = false)
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", columnDefinition = "varchar(20) default 'ACTIVE'") //columnDefinition = "varchar(20) default 'ACTIVE'"
     private CustomerStatus status;
+
+    @Column(name = "role", nullable = false, columnDefinition = "varchar(20) default 'CUSTOMER'")
+    private String role = "CUSTOMER";
 
 
     // JPA Generate
@@ -71,13 +75,6 @@ public class Customer {
 
 
     // Relationships
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new HashSet<>();
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -90,5 +87,4 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Account> accounts = new ArrayList<>();
-
 }

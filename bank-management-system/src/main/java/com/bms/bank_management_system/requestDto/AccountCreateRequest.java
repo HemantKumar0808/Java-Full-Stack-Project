@@ -19,9 +19,6 @@ import java.math.BigDecimal;
 @Builder
 public class AccountCreateRequest {
 
-    @NotNull(message = "Customer ID is required")
-    private String customerId;  // ← String, "CUST-1723456789123"
-
     @NotNull(message = "Account type is required")
     private AccountType accountType;
 

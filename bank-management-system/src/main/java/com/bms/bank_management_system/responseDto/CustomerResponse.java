@@ -17,21 +17,6 @@ import java.time.LocalDateTime;
 @Builder
 public class CustomerResponse {
     private String customerId;
-    private CustomerStatus status;
-    private String firstName;
-    private String lastName;
-    private String fatherName;
-    private String email;
-    private String phoneNo;
-    private LocalDate dateOfBirth;
-    private Gender gender;
-//    private String kycStatus;   // "PENDING" / "COMPLETED"
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-
-    // Nested address
-    private CustomerAddressResponse address;
 
     // Custom message
     private String message;

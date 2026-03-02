@@ -32,6 +32,10 @@ public class CustomerSignupRequest {
     @Email(message = "Invalid email format")
     private String email;
 
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters")
+    private String password;
+
     @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid mobile number")
     private String phoneNo;
@@ -42,10 +46,6 @@ public class CustomerSignupRequest {
 
     @NotNull(message = "Gender is required")
     private Gender gender;
-
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
-    private String password;
 
     //    Address Entity Data
     @NotBlank(message = "House number is required")
