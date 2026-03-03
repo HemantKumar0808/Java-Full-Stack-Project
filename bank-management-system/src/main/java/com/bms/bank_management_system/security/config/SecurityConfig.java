@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/customers/signup", "/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/dashboard/customer").hasRole("CUSTOMER")
+                        .requestMatchers("/api/v1/customers/kyc").hasRole("CUSTOMER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

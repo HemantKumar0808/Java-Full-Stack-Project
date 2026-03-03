@@ -6,6 +6,8 @@ import com.bms.bank_management_system.service.impl.TransactionServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,17 +21,29 @@ public class TransactionController {
     private final TransactionServiceImpl transactionService;
 
     @PostMapping("/deposit")
-    public ResponseEntity<TransactionResponse> deposit(@Valid @RequestBody TransactionRequest request) {
-        return ResponseEntity.ok(transactionService.deposit(request));
+    public ResponseEntity<TransactionResponse> deposit(
+            Authentication authentication,
+            @Valid @RequestBody TransactionRequest request) {
+
+        String customerId = authentication.getName();
+        return ResponseEntity.ok(transactionService.deposit(customerId, request));
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<TransactionResponse> withdraw(@Valid @RequestBody TransactionRequest request) {
-        return ResponseEntity.ok(transactionService.withdraw(request));
+    public ResponseEntity<TransactionResponse> withdraw(
+            Authentication authentication,
+            @Valid @RequestBody TransactionRequest request) {
+
+        String customerId = authentication.getName();
+        return ResponseEntity.ok(transactionService.withdraw(customerId, request));
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<TransactionResponse> transfer(@Valid @RequestBody TransactionRequest request) {
-        return ResponseEntity.ok(transactionService.transfer(request));
+    public ResponseEntity<TransactionResponse> transfer(
+            Authentication authentication,
+            @Valid @RequestBody TransactionRequest request) {
+
+        String customerId = authentication.getName();
+        return ResponseEntity.ok(transactionService.transfer(customerId, request));
     }
 }

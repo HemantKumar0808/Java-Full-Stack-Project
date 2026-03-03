@@ -81,7 +81,7 @@ public class CustomerServiceImpl implements com.bms.bank_management_system.servi
         // Mapping
         CustomerKycInfo kycInfo = customerKycMapper.toEntity(request);
 
-        // Link karo
+        // Link
         kycInfo.setCustomer(customer);
         customer.setKycInfo(kycInfo);
 
@@ -99,6 +99,8 @@ public class CustomerServiceImpl implements com.bms.bank_management_system.servi
         if (activatedCount > 0) {
             accountRepository.saveAll(customer.getAccounts());
         }
+
+        System.out.println(activatedCount);
 
         // Response
         return KycCompletionResponse.builder()

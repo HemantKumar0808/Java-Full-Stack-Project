@@ -6,9 +6,9 @@ import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 
 public interface TransactionService {
-    TransactionResponse deposit(TransactionRequest request);
+    TransactionResponse deposit(String customerId, TransactionRequest request);
 
-    TransactionResponse withdraw(TransactionRequest request);
+    TransactionResponse withdraw(String customerId, TransactionRequest request);
 
-    TransactionResponse transfer(TransactionRequest request);
+    TransactionResponse transfer(String customerId, TransactionRequest request);
 }

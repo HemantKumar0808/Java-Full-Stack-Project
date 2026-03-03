@@ -34,22 +34,18 @@ public class AccountServiceImpl implements AccountService {
     private final CustomerRepository customerRepository;
     private final AccountMapper accountMapper;
 
-    // ============================
-    // Public Method
-    // ============================
-
     @Override
     public AccountResponse createAccount(String customerId,
                                          AccountCreateRequest request) {
 
-        // 1️⃣ Get authenticated customer
+        //  Get authenticated customer
         Customer customer = customerRepository.findByCustomerId(customerId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Customer not found with ID: " + customerId
                         ));
 
-        // 2️⃣ Duplicate account type check
+        //  Duplicate account type check
         boolean alreadyExists = customer.getAccounts().stream()
                 .anyMatch(acc ->
                         acc.getAccountType() == request.getAccountType());
@@ -62,7 +58,7 @@ public class AccountServiceImpl implements AccountService {
             );
         }
 
-        // 3️⃣ KYC validation for initial deposit
+        //  KYC validation for initial deposit
         boolean kycCompleted = customer.getKycInfo() != null;
 
         BigDecimal deposit = Optional.ofNullable(
@@ -76,16 +72,16 @@ public class AccountServiceImpl implements AccountService {
             );
         }
 
-        // 4️⃣ Create account entity
+        // Create account entity
         Account account = new Account();
         account.setAccountNo(generateAccountNumber());
         account.setAccountType(request.getAccountType());
         account.setBalance(BigDecimal.ZERO);
-        account.setAccountStatus(AccountStatus.ACTIVE);
+        account.setAccountStatus(AccountStatus.PENDING_KYC);
         account.setCustomer(customer);
         account.setCreatedAt(LocalDateTime.now());
 
-        // 5️⃣ Handle initial deposit
+        // Handle initial deposit
         if (deposit.compareTo(BigDecimal.ZERO) > 0) {
 
             account.setBalance(deposit);
@@ -102,10 +98,10 @@ public class AccountServiceImpl implements AccountService {
             account.getIncomingTransactions().add(transaction);
         }
 
-        // 6️⃣ Save account (Cascade should save transaction)
+        //  Save account (Cascade should save transaction)
         Account savedAccount = accountRepository.save(account);
 
-        // 7️⃣ Prepare response
+        //  Prepare response
         AccountResponse response = accountMapper.toResponse(savedAccount);
         response.setMessage(kycCompleted ? "Account successfully created with full access (KYC already completed)!" : "Account created with limited access. Please complete KYC to remove limits.");
         return response;

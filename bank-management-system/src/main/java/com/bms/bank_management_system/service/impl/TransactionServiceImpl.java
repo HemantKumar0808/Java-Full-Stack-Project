@@ -4,6 +4,7 @@ import com.bms.bank_management_system.entity.Account;
 import com.bms.bank_management_system.entity.Transaction;
 import com.bms.bank_management_system.enums.TransactionType;
 import com.bms.bank_management_system.exception.ResourceNotFoundException;
+import com.bms.bank_management_system.exception.UnauthorizedAccessException;
 import com.bms.bank_management_system.mapper.TransactionMapper;
 import com.bms.bank_management_system.repository.AccountRepository;
 import com.bms.bank_management_system.repository.TransactionRepository;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @Service
@@ -26,18 +28,24 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionMapper transactionMapper;
 
     @Override
-    public TransactionResponse deposit(TransactionRequest request) {
-        return performTransaction(request, TransactionType.DEPOSIT);
+    public TransactionResponse deposit(String customerId, TransactionRequest request) {
+        return performTransaction(customerId, request, TransactionType.DEPOSIT);
     }
 
     @Override
-    public TransactionResponse withdraw(TransactionRequest request) {
-        return performTransaction(request, TransactionType.WITHDRAW);
+    public TransactionResponse withdraw(String customerId, TransactionRequest request) {
+        return performTransaction(customerId, request, TransactionType.WITHDRAW);
     }
 
-    private TransactionResponse performTransaction(TransactionRequest request, TransactionType type) {
+    private TransactionResponse performTransaction(String customerId,TransactionRequest request, TransactionType type) {
         Account account = accountRepository.findByAccountNo(request.getAccountNo())
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+        // 🔐 Ownership Check (VERY IMPORTANT)
+        if (!account.getCustomer().getCustomerId().equals(customerId)) {
+            throw new UnauthorizedAccessException("You are not allowed to access this account");
+        }
+
 
         boolean kycDone = account.getCustomer().getKycInfo() != null;
 
@@ -74,13 +82,18 @@ public class TransactionServiceImpl implements TransactionService {
 
 
     @Override
-    public TransactionResponse transfer(TransactionRequest request) {
+    public TransactionResponse transfer(String customerId, TransactionRequest request) {
         if (request.getToAccountNo() == null) {
             throw new IllegalArgumentException("To account number is required for transfer");
         }
 
         Account from = accountRepository.findByAccountNo(request.getAccountNo())
                 .orElseThrow(() -> new ResourceNotFoundException("From account not found"));
+
+        // 🔐 Ownership Check (VERY IMPORTANT)
+        if (!from.getCustomer().getCustomerId().equals(customerId)) {
+            throw new UnauthorizedAccessException("You are not allowed to access this account");
+        }
 
         Account to = accountRepository.findByAccountNo(request.getToAccountNo())
                 .orElseThrow(() -> new ResourceNotFoundException("To account not found"));

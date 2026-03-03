@@ -42,7 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String customerId = jwtUtil.extractCustomerId(token);
             String role = jwtUtil.extractRole(token);
 
-            // Role ko authorities mein convert karna
             List<SimpleGrantedAuthority> authorities = Collections.singletonList(
                     new SimpleGrantedAuthority("ROLE_" + role)
             );
