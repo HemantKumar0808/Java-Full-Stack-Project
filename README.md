@@ -9,11 +9,10 @@ Built with clean architecture, best practices, and real-world patterns that I’
 
 ## 📂 Current Projects
 
-| Project Folder                  | Description                                                                 | Status          | Tech Stack                              |
-|---------------------------------|-----------------------------------------------------------------------------|------------------|------------------------------------------|
-| `bank-management-system`        | Complete Banking Backend (REST API) – Users, Accounts, Transactions, Admin panel, Security | In Progress     | Spring Boot 3, JPA/Hibernate, MySQL, Lombok, MapStruct, Spring Security + JWT, Validation |
-| `ecommerce-app`                 | (Coming Soon) Online Shopping Platform – Products, Cart, Orders, Payments   | Planned         | Spring Boot + React / Next.js            |
-| `task-manager`                  | (Coming Soon) Advanced To-Do / Task Management App with Authentication      | Planned         | Spring Boot + React                      |
+| Project Folder             | Description                                                                 | Status    | Tech Stack                                                                                |
+|----------------------------|-----------------------------------------------------------------------------|-----------|-------------------------------------------------------------------------------------------|
+| `bank-management-system`   | Complete Banking Backend (REST API) – Users, Accounts, Transactions,  Security | Completed | Spring Boot 3, JPA/Hibernate, MySQL, Lombok, MapStruct, Spring Security + JWT, Validation |
+| `smart-ai-email-assistant` | (Coming Soon)    | Planned   | Spring Boot + JS                                                                          |
 
 More projects will be added as I build them.
 
@@ -26,7 +25,7 @@ More projects will be added as I build them.
 - **Validation**: Jakarta Bean Validation
 - **Tools**: Lombok, Spring Boot DevTools, Maven
 - **Frontend** (future): React / Next.js + Tailwind / Shadcn UI
-- **Deployment** (planned): Render, Railway, Vercel
+- **Deployment** : Render, Railway, Vercel
 
 ## 📌 Project Goals & Learning Focus
 
