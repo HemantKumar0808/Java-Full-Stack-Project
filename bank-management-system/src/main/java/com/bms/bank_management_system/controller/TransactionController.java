@@ -7,11 +7,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/transactions")
@@ -45,5 +45,11 @@ public class TransactionController {
 
         String customerId = authentication.getName();
         return ResponseEntity.ok(transactionService.transfer(customerId, request));
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<TransactionResponse>> getTransactionHistory(@RequestParam String accountNo, @AuthenticationPrincipal String customerId) {
+        List<TransactionResponse> history = transactionService.getTransactionHistory(accountNo, customerId);
+        return ResponseEntity.ok(history);
     }
 }

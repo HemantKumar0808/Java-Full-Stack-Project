@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -119,5 +121,30 @@ public class TransactionServiceImpl implements TransactionService {
         accountRepository.saveAll(List.of(from, to));
 
         return transactionMapper.toResponse(tx, from.getBalance());
+    }
+
+    @Override
+    public List<TransactionResponse> getTransactionHistory(String accountNo, String customerId) {
+
+            Account account = accountRepository.findByAccountNo(accountNo)
+                    .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+            // 🔐 Ownership Check (VERY IMPORTANT)
+            if (!account.getCustomer().getCustomerId().equals(customerId)) {
+                throw new UnauthorizedAccessException("You are not allowed to access this account");
+            }
+
+        List<Transaction> outgoing = transactionRepository.findByFromAccountId(account.getId());
+        List<Transaction> incoming = transactionRepository.findByToAccountId(account.getId());
+
+        List<Transaction> all = new ArrayList<>();
+        all.addAll(outgoing);
+        all.addAll(incoming);
+        all.sort((a, b) -> b.getTransactionDateTime().compareTo(a.getTransactionDateTime())); // Sort by date desc
+
+        return all.stream()
+                .map(tx -> transactionMapper.toResponse(tx, account.getBalance()))
+                .collect(Collectors.toList());
+
     }
 }

@@ -31,6 +31,7 @@ public class TransactionMapper {
         response.setTransactionType(tx.getTransactionType());
         response.setStatus(tx.getTransactionStatus());
         response.setTimestamp(tx.getTransactionDateTime());
+        response.setRemarks(tx.getRemarks());
         response.setNewBalance(newBalance);
         response.setMessage("Transaction successful");
         return response;

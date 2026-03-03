@@ -18,6 +18,7 @@ public class TransactionResponse {
     private TransactionType transactionType;
     private TransactionStatus status;
     private LocalDateTime timestamp;
+    private String remarks;
     private String message;
     private BigDecimal newBalance;
 }
