@@ -6,6 +6,7 @@ import com.bms.bank_management_system.security.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,10 +48,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        // Allow CORS preflight requests without authentication
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         // Public endpoints - no login required
                         .requestMatchers("/api/v1/customers/signup", "/api/v1/auth/login").permitAll()
                         .requestMatchers("/login.html", "/signup.html").permitAll()
-                        .requestMatchers("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.html").permitAll()  // Allow all HTML and static resources
+
+                        // Static resources (CSS, JS, images, HTML files)
+                        .requestMatchers("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg", "/**/*.gif", "/**/*.ico", "/**/*.html").permitAll()
+
+                        // Swagger (optional)
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
