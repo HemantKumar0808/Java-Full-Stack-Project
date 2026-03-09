@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Signup - Before Creating Account</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f8f9fa;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #7f8c8d;
+      margin-bottom: 30px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px 30px;
+    }
+
+    @media (min-width: 768px) {
+      .form-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .section-title {
+      grid-column: 1 / -1;
+      font-size: 1.3rem;
+      color: #34495e;
+      margin: 20px 0 15px;
+      border-left: 4px solid #3498db;
+      padding-left: 10px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #34495e;
+      font-weight: 500;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #bdc3c7;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+
+    button {
+      grid-column: 1 / -1;
+      padding: 14px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 25px;
+    }
+
+    button:hover {
+      background: #219653;
+    }
+
+    #message {
+      grid-column: 1 / -1;
+      margin-top: 25px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .success {
+      color: #27ae60;
+    }
+
+    .error {
+      color: #c0392b;
+    }
+
+    .customer-id {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #e74c3c;
+      margin: 15px 0;
+      text-align: center;
+    }
+
+    .back-link {
+      grid-column: 1 / -1;
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .back-link a {
+      color: #2980b9;
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Customer Signup</h1>
+    <p class="subtitle">Before Creating Account - Please fill all details carefully</p>
+
+    <form id="signupForm" class="form-grid">
+
+      <!-- Section 1: Login Credentials -->
+      <div class="section-title full-width">1. Login Credentials</div>
+
+      <div class="full-width">
+        <label for="email">Email Address *</label>
+        <input type="email" id="email" required placeholder="you@example.com" />
+      </div>
+
+      <div class="full-width">
+        <label for="password">Password (min 6 characters) *</label>
+        <input type="password" id="password" minlength="6" required placeholder="••••••••" />
+      </div>
+
+      <!-- Section 2: Personal Details -->
+      <div class="section-title full-width">2. Personal Details</div>
+
+      <div>
+        <label for="firstName">First Name *</label>
+        <input type="text" id="firstName" required />
+      </div>
+
+      <div>
+        <label for="lastName">Last Name *</label>
+        <input type="text" id="lastName" required />
+      </div>
+
+      <div class="full-width">
+        <label for="fatherName">Father's Name *</label>
+        <input type="text" id="fatherName" required />
+      </div>
+
+      <!-- Section 3: Contact & DOB -->
+      <div class="section-title full-width">3. Contact & Date of Birth</div>
+
+      <div>
+        <label for="phoneNo">Mobile Number *</label>
+        <input type="tel" id="phoneNo" pattern="[6-9][0-9]{9}" required placeholder="10 digit number" />
+      </div>
+
+      <div>
+        <label for="dateOfBirth">Date of Birth *</label>
+        <input type="date" id="dateOfBirth" required />
+      </div>
+
+      <div>
+        <label for="gender">Gender *</label>
+        <select id="gender" required>
+          <option value="">Select</option>
+          <option value="MALE">Male</option>
+          <option value="FEMALE">Female</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+
+      <!-- Section 4: Address -->
+      <div class="section-title full-width">4. Address Details</div>
+
+      <div>
+        <label for="houseNo">House No / Flat No *</label>
+        <input type="text" id="houseNo" required />
+      </div>
+
+      <div>
+        <label for="street">Street / Area *</label>
+        <input type="text" id="street" required />
+      </div>
+
+      <div>
+        <label for="landmark">Landmark (optional)</label>
+        <input type="text" id="landmark" />
+      </div>
+
+      <div>
+        <label for="city">City *</label>
+        <input type="text" id="city" required />
+      </div>
+
+      <div>
+        <label for="state">State *</label>
+        <input type="text" id="state" required />
+      </div>
+
+      <div>
+        <label for="pinCode">PIN Code *</label>
+        <input type="text" id="pinCode" pattern="\d{6}" required placeholder="6 digits" />
+      </div>
+
+      <div class="full-width">
+        <label for="country">Country *</label>
+        <input type="text" id="country" value="India" required />
+      </div>
+
+      <button type="submit">Create Customer Account</button>
+    </form>
+
+    <div id="message"></div>
+
+    <div class="back-link">
+      <a href="login.html">Already have an account? Login here</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const messageDiv = document.getElementById("message");
+      messageDiv.className = "";
+      messageDiv.textContent = "Processing... Please wait.";
+
+      const formData = {
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value.trim(),
+        firstName: document.getElementById("firstName").value.trim(),
+        lastName: document.getElementById("lastName").value.trim(),
+        fatherName: document.getElementById("fatherName").value.trim(),
+        phoneNo: document.getElementById("phoneNo").value.trim(),
+        dateOfBirth: document.getElementById("dateOfBirth").value,
+        gender: document.getElementById("gender").value,
+        houseNo: document.getElementById("houseNo").value.trim(),
+        street: document.getElementById("street").value.trim(),
+        landmark: document.getElementById("landmark").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        state: document.getElementById("state").value.trim(),
+        pinCode: document.getElementById("pinCode").value.trim(),
+        country: document.getElementById("country").value.trim()
+      }
+
+      const response = await fetch("/api/v1/customers/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      try {
+        if (response.ok) {
+          messageDiv.className = "success";
+          messageDiv.innerHTML = `
+        Signup Successfully! <br>
+        Customer ID: <strong>${data.customerId}<strong> <br>
+        Please save this ID carefully.<br><br>
+        <button onclick="window.location.href='login.html'"
+          style="padding:10px 20px;background:#3498db;color:white;border:none;border-radius:5px;cursor:pointer;">
+          Go to Login Page
+        </button>
+        `;
+        } else {
+          messageDiv.className = "error";
+          messageDiv.textContent = data.message;
+        }
+      }catch(error){
+        messageDiv.className = "error"
+        messageDiv.textContent = "Network error: Unable to connect to server. Is backend running?";
+      }
+
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complete KYC - Bank Account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f4f6f9;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 6px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .success {
+            /* background: #d4edda; */
+            color: #155724;
+        }
+
+        .error {
+            /* background: #f8d7da; */
+            color: #721c24;
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .back a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Complete Your KYC</h1>
+        <p class="subtitle">To unlock full banking features, please provide your KYC details</p>
+
+        <form id="kycForm">
+
+            <label for="panNumber">PAN Number *</label>
+            <input type="text" id="panNumber" placeholder="ABCDE1234F" maxlength="10" required
+                pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="Invalid PAN format (ABCDE1234F)" />
+
+            <label for="aadharNumber">Aadhaar Number *</label>
+            <input type="text" id="aadharNumber" placeholder="1234 5678 9012" maxlength="14" required
+                pattern="\d{4}\s?\d{4}\s?\d{4}" title="Invalid Aadhaar format" />
+
+            <label for="education">Highest Education *</label>
+            <input type="text" id="education" placeholder="e.g., B.Tech, Graduate, 12th Pass" required />
+
+            <label for="occupation">Occupation / Profession *</label>
+            <input type="text" id="occupation" placeholder="e.g., Student, Salaried, Business, Self-Employed"
+                required />
+
+            <button type="submit" id="submitBtn">Submit KYC Details</button>
+        </form>
+
+        <div id="message"></div>
+
+        <div class="back">
+            <a href="dashboard.html">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+
+        document.getElementById("kycForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const token = localStorage.getItem("token");
+
+            console.log(token);
+
+            const kycData = {
+                panNumber: document.getElementById("panNumber").value.trim(),
+                aadharNumber: document.getElementById("aadharNumber").value.trim(),
+                education: document.getElementById("education").value.trim(),
+                occupation: document.getElementById("occupation").value.trim(),
+            }
+
+            const message = document.getElementById("message");
+            const submitBtn = document.getElementById("submitBtn");
+
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Submitting...";
+
+            const response = await fetch("/api/v1/customers/kyc", {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify(kycData)
+            })
+
+            const data = await response.json();
+            try {
+                if (response.ok) {
+                    message.className = "success";
+                    message.textContent = "KYC Submitted Successfully! Your account is now fully active.";
+                    submitBtn.textContent = "KYC Completed";
+                    submitBtn.style.backgroundColor = "green";
+                } else {
+                    message.className = "error";
+                    message.textContent = data.message;
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Submit KYC Details";
+                }
+            } catch (error) {
+                showMessage("Network error: " + error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit KYC Details";
+            }
+
+        })
+
+    </script>
+</body>
+
+</html>

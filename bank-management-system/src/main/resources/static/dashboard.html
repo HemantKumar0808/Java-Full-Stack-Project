@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADFC Bank Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f6f9;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: #1565c0;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      margin-left:50px;
+      font-size: 1.4rem;
+    }
+
+    .customer-id {
+      margin-left: 41%;
+      font-size: 1.1rem;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 15px;
+      border-radius: 5px;
+    }
+
+    .logout-btn {
+      margin-right: 50px;
+      font-size: 1rem;
+      background: linear-gradient(135deg, #c0392b, #e74c3c);
+      color: white;
+      padding: 8px 18px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .logout-btn:hover {
+      background: linear-gradient(135deg, #e81703, #c0392b);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .content {
+      display: flex;
+      gap: 25px;
+    }
+
+    .left-column {
+      flex: 6;
+      /* ~60% */
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .right-column {
+      flex: 4;
+      /* ~40% */
+    }
+
+    .section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .section h3 {
+      margin-top: 0;
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: #f8f9fa;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .action-btn {
+      padding: 15px;
+      text-align: center;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      color: white;
+      text-decoration: none;
+      display: block;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .create-account {
+      background: #f39c12;
+    }
+
+    .deposit {
+      background: #27ae60;
+    }
+
+    .withdraw {
+      background: #e74c3c;
+    }
+
+    .transfer {
+      background: #3498db;
+    }
+
+    .transaction {
+      background: rgb(86, 198, 164);
+    }
+
+    #message {
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 5px;
+      text-align: center;
+      background: #fff3cd;
+      color: #856404;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>Welcome to ADFC Bank Dashboard</h1>
+    <div class="customer-id" id="customerIdDisplay">Loading...</div>
+    <button class="logout-btn" id="logoutBtn">Log Out</button>
+  </div>
+  <div class="container">
+
+    <div class="content">
+      <div class="left-column">
+
+        <!-- Profile Information -->
+        <div class="section">
+          <h3>Profile Information</h3>
+          <p><strong>Name:</strong> <span id="fullName">Loading...</span></p>
+          <p><strong>Email:</strong> <span id="email">Loading...</span></p>
+          <p><strong>Phone:</strong> <span id="phoneNo">Loading...</span></p>
+        </div>
+
+        <!-- KYC Status -->
+        <div class="section">
+          <h3>KYC Status</h3>
+          <a href="kyc-complete.html" class="kyc" id="kycLink">
+          <div class="kyc-status" id="kycStatus">Loading KYC status...</div>
+        </a>
+        </div>
+
+        <!-- Accounts -->
+        <div class="section">
+          <h3>My Accounts</h3>
+          <table id="accountsTable">
+            <thead>
+              <tr>
+                <th>Account No</th>
+                <th>Type</th>
+                <th>Balance (₹)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="accountsBody">
+              <tr>
+                <td colspan="4" style="text-align:center; color:#7f8c8d;">Loading accounts...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right Column - 40% -->
+      <div class="right-column">
+        <div class="section">
+          <h3>Bank Services</h3>
+          <div class="actions">
+            <a href="create-account.html" class="action-btn create-account">Create New Account</a>
+            <a href="deposit.html" class="action-btn deposit">Deposit Money</a>
+            <a href="withdraw.html" class="action-btn withdraw">Withdraw Money</a>
+            <a href="transfer.html" class="action-btn transfer">Transfer Money</a>
+            <a href="transaction.html" class="action-btn transaction">Transaction History</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+
+  // Safe logout
+  document.getElementById("logoutBtn")?.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 500);
+  });
+
+  async function loadDashboard() {
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "login.html";
+      return; // stop execution
+    }
+
+   const messageDiv = document.getElementById("kycStatus");
+   messageDiv.textContent = "Loading your dashboard...";
+
+   const response = await fetch("/api/v1/dashboard/customer", {
+     method: 'GET',
+     headers: { "Authorization": "Bearer " + token }
+   });
+
+   const data = await response.json();
+
+   try {
+     if (response.ok) {
+       // customer ID
+       document.getElementById("customerIdDisplay").textContent = "ID: " + data.customerId;
+
+       // Profile
+       document.getElementById("fullName").textContent = data.fullName;
+       document.getElementById("email").textContent = data.email;
+       document.getElementById("phoneNo").textContent = data.phoneNo;
+
+       // KYC Status
+       const kycDiv = document.getElementById("kycStatus");
+       const kycLink = document.getElementById("kycLink");
+
+       if (data.kycCompleted) {
+         kycDiv.className = "kyc-status kyc-done";
+         kycLink.classList.add("kyc-disabled");
+         kycLink.removeAttribute("href");
+         kycLink.setAttribute("aria-disabled", "true");
+         kycDiv.textContent = "KYC Completed Full Access Unlocked";
+         kycDiv.style.color = "green";
+       } else {
+         kycDiv.className = "kyc-status kyc-pending";
+         kycLink.classList.remove("kyc-disabled");
+         kycLink.setAttribute("href", "kyc-complete.html");
+         kycLink.removeAttribute("aria-disabled");
+         kycDiv.textContent = "KYC Pending! Complete KYC to remove limits.";
+         kycDiv.style.color = "red";
+         kycLink.style.textDecoration = "none";
+
+       }
+
+       // Accounts Table
+       const tbody = document.getElementById("accountsBody");
+       tbody.innerHTML = "";
+       if (data.accounts && data.accounts.length > 0) {
+         data.accounts.forEach(acc => {
+           const row = document.createElement("tr");
+           row.innerHTML = `
+             <td>${acc.accountNo}</td>
+             <td>${acc.accountType}</td>
+             <td>₹${acc.balance}</td>
+             <td>${acc.status}</td>
+           `;
+           tbody.appendChild(row);
+         });
+       } else {
+         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#7f8c8d;">No accounts found. Create your first account.</td></tr>`;
+       }
+     }
+   } catch (error) {
+     console.error("Dashboard error:", error);
+     document.getElementById("kycStatus").className = "kyc-status kyc-pending";
+     document.getElementById("kycStatus").textContent = "Error loading dashboard. " + error.message;
+   }
+
+ }
+ window.onload = loadDashboard;
+</script>
+</body>
+
+</html>

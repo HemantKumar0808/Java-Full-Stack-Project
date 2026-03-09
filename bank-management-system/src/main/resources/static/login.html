@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADFC Bank - Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .main-container {
+      display: flex;
+      width: 100%;
+      max-width: 1200px;
+      height: 85vh;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Left - Bank Branding (hint of Facebook style) */
+    .left-panel {
+      flex: 1;
+      background: linear-gradient(135deg, #1565c0, #0d47a1);
+      color: white;
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .left-panel h1 {
+      font-size: 3.8rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    .left-panel .tagline {
+      font-size: 1.4rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
+
+    .left-panel .slogan {
+      font-size: 1.2rem;
+      max-width: 80%;
+      margin: 0 auto;
+      opacity: 0.85;
+    }
+
+    /* Right - Login Form */
+    .right-panel {
+      flex: 1;
+      background: white;
+      padding: 60px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .login-title {
+      font-size: 2.2rem;
+      color: #1565c0;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .login-subtitle {
+      font-size: 1.1rem;
+      color: #546e7a;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #37474f;
+      font-size: 0.95rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #cfd8dc;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #1565c0;
+      box-shadow: 0 0 0 3px rgba(21,101,192,0.15);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #1565c0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #0d47a1;
+      transform: translateY(-2px);
+    }
+
+    #message {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .success { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 1rem;
+      color: #546e7a;
+    }
+
+    .signup-link a {
+      color: #1565c0;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="main-container">
+
+    <div class="left-panel">
+      <h1>🏦ADFC BANK</h1>
+      <div class="tagline">Banking with Trust & Simplicity</div>
+      <div class="slogan">
+        Secure access to your finances — anytime, anywhere.
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <h2 class="login-title">Log in to ADFC Bank</h2>
+      <p class="login-subtitle">Securely access your account</p>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginId">Customer ID or Email</label>
+          <input type="text" id="loginId" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required />
+        </div>
+
+        <button type="submit">Log In</button>
+      </form>
+
+      <div id="message"></div>
+
+      <div class="signup-link">
+        New to ADFC Bank? <a href="signup.html">Signup</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const loginId = document.getElementById("loginId").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const message = document.getElementById("message");
+      const loginBtn = document.querySelector("button[type='submit']");
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Logging in...";
+
+      try {
+        const response = await fetch("/api/v1/auth/login", {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ loginId, password })
+        })
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem("token", data.token);
+
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 1000);
+
+        } else {
+          message.textContent = data.message;
+          loginBtn.disabled = false;
+          loginBtn.textContent = "Login";
+        }
+      } catch (error) {
+        message.textContent = "Server error. Is backend running?";
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login";
+      }
+    });
+  </script>
+</body>
+</html>

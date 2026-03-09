@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f4f6f9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d9e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            font-size: 0.95rem;
+            overflow: hidden;
+            border-radius: 10px;
+            table-layout: fixed;
+        }
+
+        thead {
+            background: #2c3e50;
+            color: white;
+        }
+
+        th {
+            padding: 14px 12px;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 4px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            word-break: break-word;
+        }
+        th {
+            background: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        tbody tr:hover {
+            background: #f5f9ff;
+            transition: 0.2s;
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .back a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Transaction History</h1>
+
+        <form id="historyForm">
+            <div class="form-group">
+                <label for="accountNo">Enter Account Number *</label>
+                <input type="text" id="accountNo" required placeholder="e.g. ACC123456789" />
+            </div>
+
+            <button type="submit" id="submitBtn">View History</button>
+        </form>
+
+        <div id="message"></div>
+
+        <table id="historyTable">
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Type</th>
+                    <th>Amount (₹)</th>
+                    <th>Remarks</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="historyBody">
+                <tr>
+                    <td colspan="6" style="text-align:center; color:#7f8c8d;">Enter account number and click View
+                        History</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="back">
+            <a href="dashboard.html">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+
+        document.getElementById("historyForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Please login first");
+                window.location.href = "login.html";
+                return;
+            }
+
+            const accountNo = document.getElementById("accountNo").value.trim();
+            if (!accountNo) {
+                showMessage("Please enter account number", "error");
+                return;
+            }
+
+            const messageDiv = document.getElementById("message");
+            const submitBtn = document.getElementById("submitBtn");
+            const table = document.getElementById("historyTable");
+            const tbody = document.getElementById("historyBody");
+
+            showMessage("Loading transaction history...", "info");
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Loading...";
+            tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'>Loading...</td></tr>";
+
+            try {
+                const response = await fetch(`/api/v1/transactions/history?accountNo=${accountNo}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                });
+
+                const data = await response.json();
+
+                console.log(data);
+
+                if (response.ok) {
+                    tbody.innerHTML = "";
+                    if (data.length > 0) {
+                        data.forEach(trans => {
+                            // Format timestamp
+                            let formattedDate = "N/A";
+                            if (trans.timestamp) {
+                                const date = new Date(trans.timestamp);
+                                formattedDate = date.toLocaleString("en-IN", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    second: "2-digit"
+                                });
+                            }
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${trans.transactionId || "N/A"}</td>
+                                <td>${trans.transactionType || "N/A"}</td>
+                                <td>${trans.amount || "N/A"}</td>
+                                <td>${trans.remarks || "N/A"}</td>
+                                <td>${formattedDate || "N/A"}</td>
+                                <td>${trans.status || "N/A"}</td>
+                            `;
+                            
+                            tbody.append(row);
+                        });
+                        showMessage(`Showing ${data.length} transactions`, "success");
+                    } else {
+                        tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:#7f8c8d;'>No transactions found for this account</td></tr>";
+                        showMessage("No transactions found", "info");
+
+                    }
+                } else {
+                    showMessage(data.message || "Failed to load history", "error");
+                    tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:#721c24;'>Error loading data</td></tr>";
+                }
+            } catch (err) {
+                showMessage("Network error: " + err.message, "error");
+                tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; color:#721c24;'>Cannot connect to server</td></tr>";
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "View History";
+            }
+        });
+
+        function showMessage(text, type) {
+            const msg = document.getElementById("message");
+            msg.textContent = text;
+            msg.className = type;
+        }
+    </script>
+</body>
+
+</html>

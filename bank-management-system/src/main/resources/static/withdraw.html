@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Withdraw Money</title>
+  <style>
+    /* Same style as deposit - just change header color */
+    body { margin:0; font-family:Arial,sans-serif; background:#f0f4f8; min-height:100vh; display:flex; justify-content:center; align-items:center; }
+    .container { background:white; width:90%; max-width:480px; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.12); overflow:hidden; }
+    .header { background:#e74c3c; color:white; padding:25px; text-align:center; font-size:1.5rem; font-weight:600; }
+    .form-content { padding:30px 25px; }
+    label { display:block; margin-bottom:8px; font-weight:600; color:#2c3e50; }
+    input, textarea { width:100%; padding:12px; margin-bottom:20px; border:1px solid #d1d9e0; border-radius:8px; font-size:1rem; box-sizing:border-box; }
+    input:focus, textarea:focus { outline:none; border-color:#27ae60; box-shadow:0 0 0 3px rgba(39,174,96,0.15); }
+    textarea { resize:vertical; height:80px; }
+    button { width:100%; padding:14px; background:#e74c3c; color:white; border:none; border-radius:8px; font-size:1.1rem; font-weight:600; cursor:pointer; transition:background 0.3s; }
+    button:hover { background:#c0392b; }
+    button:disabled { background:#95a5a6; cursor:not-allowed; }
+    #message { margin-top:20px; padding:12px; border-radius:8px; text-align:center; font-weight:600; }
+    .success { background:#d4edda; color:#155724; }
+    .error { background:#f8d7da; color:#721c24; }
+    .back { text-align:center; margin-top:25px; }
+    .back a { color:#e74c3c; text-decoration:none; font-weight:600; }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">Withdraw Money</div>
+
+    <div class="form-content">
+      <form id="withdrawForm">
+
+        <label for="accountNo">Account Number *</label>
+        <input type="text" id="accountNo" required placeholder="Enter your account number" />
+
+        <label for="amount">Amount (₹) *</label>
+        <input type="number" id="amount" min="1" step="0.01" required placeholder="Enter amount to withdraw" />
+
+        <label for="remarks">Remarks (Optional)</label>
+        <textarea id="remarks" maxlength="200"></textarea>
+
+        <button type="submit" id="submitBtn">Withdraw Now</button>
+      </form>
+
+      <div id="message"></div>
+
+      <div class="back">
+        <a href="dashboard.html">← Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  
+    document.getElementById("withdrawForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please login first");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const accountNo = document.getElementById("accountNo").value.trim();
+      const amount = document.getElementById("amount").value.trim();
+
+      if (!accountNo || !amount || Number(amount) <= 0) {
+        showMessage("Please enter valid account number and amount", "error");
+        return;
+      }
+
+      const messageDiv = document.getElementById("message");
+      const submitBtn = document.getElementById("submitBtn");
+      const remarks = document.getElementById("remarks").value.trim();
+
+      showMessage("Processing withdrawal...", "info");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Processing...";
+
+      try {
+        const res = await fetch("/api/v1/transactions/withdraw", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({
+            accountNo,
+            amount: parseFloat(amount),
+            remarks: remarks
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showMessage(`Withdrawal successful! New Balance: ₹${data.newBalance}`, "success");
+          submitBtn.textContent = "Withdrawal Done";
+          // setTimeout(() => window.location.href = "dashboard.html", 3000);
+        } else {
+          showMessage(data.message || "Withdrawal failed", "error");
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Withdraw Now";
+        }
+      } catch (err) {
+        showMessage("Network error. Please check connection.", "error");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Withdraw Now";
+      }
+    });
+
+    function showMessage(text, type) {
+      const msg = document.getElementById("message");
+      msg.textContent = text;
+      msg.className = type;
+    }
+  </script>
+</body>
+</html>
