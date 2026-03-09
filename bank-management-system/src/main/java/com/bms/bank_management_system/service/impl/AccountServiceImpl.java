@@ -77,7 +77,8 @@ public class AccountServiceImpl implements AccountService {
         account.setAccountNo(generateAccountNumber());
         account.setAccountType(request.getAccountType());
         account.setBalance(BigDecimal.ZERO);
-        account.setAccountStatus(AccountStatus.PENDING_KYC);
+
+        account.setAccountStatus(kycCompleted ? AccountStatus.ACTIVE : AccountStatus.PENDING_KYC);
         account.setCustomer(customer);
         account.setCreatedAt(LocalDateTime.now());
 

@@ -46,13 +46,30 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Public endpoints - no login required
                         .requestMatchers("/api/v1/customers/signup", "/api/v1/auth/login").permitAll()
+                        .requestMatchers("/login.html", "/signup.html").permitAll()
+                        .requestMatchers("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.html").permitAll()  // Allow all HTML and static resources
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+
+                        // Protected APIs - authentication and role required
                         .requestMatchers("/api/v1/dashboard/customer").hasRole("CUSTOMER")
                         .requestMatchers("/api/v1/customers/kyc").hasRole("CUSTOMER")
+                        .requestMatchers("/api/v1/accounts/create").hasRole("CUSTOMER")
+                        .requestMatchers("/api/v1/transactions/deposit").hasRole("CUSTOMER")
+                        .requestMatchers("/api/v1/transactions/withdraw").hasRole("CUSTOMER")
+                        .requestMatchers("/api/v1/transactions/transfer").hasRole("CUSTOMER")
+                        .requestMatchers("/api/v1/transactions/history").hasRole("CUSTOMER")
+
+                        // Everything else - authentication required
                         .anyRequest().authenticated()
                 )
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
