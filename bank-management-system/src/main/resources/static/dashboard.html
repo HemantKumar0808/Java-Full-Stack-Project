@@ -24,35 +24,39 @@
       padding: 20px;
       border-radius: 8px;
       margin-bottom: 25px;
+
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .header h1 {
-      margin-left:50px;
+      margin: 0;
       font-size: 1.4rem;
     }
 
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
     .customer-id {
-      margin-left: 41%;
-      font-size: 1.1rem;
+      font-size: 1rem;
       background: rgba(255, 255, 255, 0.2);
-      padding: 8px 15px;
+      padding: 6px 12px;
       border-radius: 5px;
     }
 
     .logout-btn {
-      margin-right: 50px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       background: linear-gradient(135deg, #c0392b, #e74c3c);
       color: white;
-      padding: 8px 18px;
+      padding: 8px 16px;
       border-radius: 6px;
       border: none;
       cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 500;
+      transition: 0.3s;
     }
 
     .logout-btn:hover {
@@ -160,14 +164,117 @@
       background: #fff3cd;
       color: #856404;
     }
+
+    /* ================= RESPONSIVE DESIGN ================= */
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+
+      .content {
+        flex-direction: column;
+      }
+
+      .left-column,
+      .right-column {
+        flex: 100%;
+      }
+
+      .customer-id {
+        margin-left: 0;
+      }
+
+      .header {
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: space-between;
+      }
+
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+
+      body {
+        padding: 10px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .header h1 {
+        margin-left: 0;
+        font-size: 1.2rem;
+      }
+
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .customer-id {
+        margin-left: 0;
+        font-size: 0.95rem;
+      }
+
+      .logout-btn {
+        margin-right: 0;
+        align-self: flex-end;
+      }
+
+      .section {
+        padding: 15px;
+      }
+
+      table {
+        font-size: 0.9rem;
+      }
+
+      th,
+      td {
+        padding: 8px;
+      }
+
+      .action-btn {
+        font-size: 1rem;
+        padding: 12px;
+      }
+
+    }
+
+    /* Small Mobile */
+    @media (max-width: 480px) {
+
+      .header h1 {
+        font-size: 1rem;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .action-btn {
+        font-size: 0.95rem;
+        padding: 10px;
+      }
+
+    }
   </style>
 </head>
 
 <body>
   <div class="header">
+
     <h1>Welcome to ADFC Bank Dashboard</h1>
-    <div class="customer-id" id="customerIdDisplay">Loading...</div>
-    <button class="logout-btn" id="logoutBtn">Log Out</button>
+
+    <div class="header-right">
+      <div class="customer-id" id="customerIdDisplay">Loading...</div>
+      <button class="logout-btn" id="logoutBtn">Log Out</button>
+    </div>
+
   </div>
   <div class="container">
 
@@ -186,8 +293,8 @@
         <div class="section">
           <h3>KYC Status</h3>
           <a href="kyc-complete.html" class="kyc" id="kycLink">
-          <div class="kyc-status" id="kycStatus">Loading KYC status...</div>
-        </a>
+            <div class="kyc-status" id="kycStatus">Loading KYC status...</div>
+          </a>
         </div>
 
         <!-- Accounts -->
@@ -246,74 +353,74 @@
       return; // stop execution
     }
 
-   const messageDiv = document.getElementById("kycStatus");
-   messageDiv.textContent = "Loading your dashboard...";
+    const messageDiv = document.getElementById("kycStatus");
+    messageDiv.textContent = "Loading your dashboard...";
 
-   const response = await fetch("/api/v1/dashboard/customer", {
-     method: 'GET',
-     headers: { "Authorization": "Bearer " + token }
-   });
+    const response = await fetch("/api/v1/dashboard/customer", {
+      method: 'GET',
+      headers: { "Authorization": "Bearer " + token }
+    });
 
-   const data = await response.json();
+    const data = await response.json();
 
-   try {
-     if (response.ok) {
-       // customer ID
-       document.getElementById("customerIdDisplay").textContent = "ID: " + data.customerId;
+    try {
+      if (response.ok) {
+        // customer ID
+        document.getElementById("customerIdDisplay").textContent = "ID: " + data.customerId;
 
-       // Profile
-       document.getElementById("fullName").textContent = data.fullName;
-       document.getElementById("email").textContent = data.email;
-       document.getElementById("phoneNo").textContent = data.phoneNo;
+        // Profile
+        document.getElementById("fullName").textContent = data.fullName;
+        document.getElementById("email").textContent = data.email;
+        document.getElementById("phoneNo").textContent = data.phoneNo;
 
-       // KYC Status
-       const kycDiv = document.getElementById("kycStatus");
-       const kycLink = document.getElementById("kycLink");
+        // KYC Status
+        const kycDiv = document.getElementById("kycStatus");
+        const kycLink = document.getElementById("kycLink");
 
-       if (data.kycCompleted) {
-         kycDiv.className = "kyc-status kyc-done";
-         kycLink.classList.add("kyc-disabled");
-         kycLink.removeAttribute("href");
-         kycLink.setAttribute("aria-disabled", "true");
-         kycDiv.textContent = "KYC Completed Full Access Unlocked";
-         kycDiv.style.color = "green";
-       } else {
-         kycDiv.className = "kyc-status kyc-pending";
-         kycLink.classList.remove("kyc-disabled");
-         kycLink.setAttribute("href", "kyc-complete.html");
-         kycLink.removeAttribute("aria-disabled");
-         kycDiv.textContent = "KYC Pending! Complete KYC to remove limits.";
-         kycDiv.style.color = "red";
-         kycLink.style.textDecoration = "none";
+        if (data.kycCompleted) {
+          kycDiv.className = "kyc-status kyc-done";
+          kycLink.classList.add("kyc-disabled");
+          kycLink.removeAttribute("href");
+          kycLink.setAttribute("aria-disabled", "true");
+          kycDiv.textContent = "KYC Completed Full Access Unlocked";
+          kycDiv.style.color = "green";
+        } else {
+          kycDiv.className = "kyc-status kyc-pending";
+          kycLink.classList.remove("kyc-disabled");
+          kycLink.setAttribute("href", "kyc-complete.html");
+          kycLink.removeAttribute("aria-disabled");
+          kycDiv.textContent = "KYC Pending! Complete KYC to remove limits.";
+          kycDiv.style.color = "red";
+          kycLink.style.textDecoration = "none";
 
-       }
+        }
 
-       // Accounts Table
-       const tbody = document.getElementById("accountsBody");
-       tbody.innerHTML = "";
-       if (data.accounts && data.accounts.length > 0) {
-         data.accounts.forEach(acc => {
-           const row = document.createElement("tr");
-           row.innerHTML = `
+        // Accounts Table
+        const tbody = document.getElementById("accountsBody");
+        tbody.innerHTML = "";
+        if (data.accounts && data.accounts.length > 0) {
+          data.accounts.forEach(acc => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
              <td>${acc.accountNo}</td>
              <td>${acc.accountType}</td>
              <td>₹${acc.balance}</td>
              <td>${acc.status}</td>
            `;
-           tbody.appendChild(row);
-         });
-       } else {
-         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#7f8c8d;">No accounts found. Create your first account.</td></tr>`;
-       }
-     }
-   } catch (error) {
-     console.error("Dashboard error:", error);
-     document.getElementById("kycStatus").className = "kyc-status kyc-pending";
-     document.getElementById("kycStatus").textContent = "Error loading dashboard. " + error.message;
-   }
+            tbody.appendChild(row);
+          });
+        } else {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#7f8c8d;">No accounts found. Create your first account.</td></tr>`;
+        }
+      }
+    } catch (error) {
+      console.error("Dashboard error:", error);
+      document.getElementById("kycStatus").className = "kyc-status kyc-pending";
+      document.getElementById("kycStatus").textContent = "Error loading dashboard. " + error.message;
+    }
 
- }
- window.onload = loadDashboard;
+  }
+  window.onload = loadDashboard;
 </script>
 </body>
 
