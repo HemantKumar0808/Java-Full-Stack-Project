@@ -2,17 +2,17 @@
 This project is the original work of Hemant Kumar.  
 Unauthorized copying or redistribution without proper attribution is strictly prohibited.
 
-# Java Full Stack Learning & Projects 🚀
+# Java Full Stack Learning & Projects 
 
 A monorepo containing all my full-stack Java + Spring Boot projects.  
 Built with clean architecture, best practices, and real-world patterns that I’m learning and implementing step-by-step.
 
 ## 📂 Current Projects
 
-| Project Folder             | Description                                                                 | Status    | Tech Stack                                                                                |
-|----------------------------|-----------------------------------------------------------------------------|-----------|-------------------------------------------------------------------------------------------|
+| Project Folder             | Description                        | Status    | Tech Stack                                                                           |
+|----------------------------|------------------------------------|-----------|--------------------------------------------------------------------------------------|
 | `bank-management-system`   | Complete Banking Backend (REST API) – Users, Accounts, Transactions,  Security | Completed | Spring Boot 3, JPA/Hibernate, MySQL, Lombok, MapStruct, Spring Security + JWT, Validation |
-| `smart-ai-email-assistant` | (Coming Soon)    | Planned   | Spring Boot + JS                                                                          |
+| `smart-ai-email-assistant` | Complete Smart AI email assistant  | Completed | Spring Boot + JS + Google Gemini API                                                 |
 
 More projects will be added as I build them.
 
